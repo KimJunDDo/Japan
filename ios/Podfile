@@ -1,0 +1,55 @@
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+platform :ios, '16.4'
+prepare_react_native_project!
+
+use_frameworks! :linkage => :static
+
+target 'Japan' do
+  config = use_native_modules!
+
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'react-native-google-maps', :path => rn_maps_path
+  pod 'react-native-maps', :path => rn_maps_path
+  pod 'Google-Maps-iOS-Utils' # Google Maps iOS Utils 직접 설치 (react-native-maps에서 요구하는 버전)
+  pod 'Firebase/Auth'
+  pod 'Firebase/Analytics'
+  
+  # Flags 설정
+  flags = get_default_flags()
+
+  # React Native 설치
+  use_react_native!(
+    :path => config[:reactNativePath],
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  # 추가 모듈 설치
+  pod 'react-native-geolocation-service', :path => '../node_modules/react-native-geolocation-service'
+
+  target 'JapanTests' do
+    inherit! :complete
+    # 테스트 관련 Pods 추가
+  end
+
+  post_install do |installer|
+    react_native_post_install(installer)
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        # 시뮬레이터 관련 설정 최적화
+        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++14'
+        config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
+      end
+
+      # react-native-google-maps 타겟에 대한 설정
+      if target.name&.eql?('react-native-google-maps') || target.name&.include?('FirebaseAuth')
+        target.build_configurations.each do |config|
+          config.build_settings['CLANG_ENABLE_MODULES'] = 'YES'
+        end
+      end
+    end
+  end
+end
