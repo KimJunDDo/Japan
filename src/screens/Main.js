@@ -1,99 +1,12 @@
-import React from 'react';
-import { TouchableOpacity, StatusBar, SafeAreaView, ScrollView, View, Text, FlatList, Image, StyleSheet } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { TouchableOpacity, StatusBar, SafeAreaView, ScrollView, View, Text, FlatList, Image, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import axios from 'axios';
+import { AuthContext } from '../contexts/AuthContext';
 import Event from '../components/Event';
-import TopLyoko from '../../assets/svg/TopLyoko.svg'
+import TopLyoko from '../../assets/svg/TopLyoko.svg';
 import Map from '../components/Map';
 
-// 샘플 데이터
-const sampledata = [
-    {
-        id: '1',
-        title: '오도리 공원 와봤어요!',
-        image: require('../../assets/images/Hokkaido/odoripark.png'),
-        name: '강냉이 1',
-        date: '2024-08-01',
-        recommendations: 3,
-        content: '확실히 여름에 오니까 춥지도 않고, 공원에서 돌아다니기 좋아요. 그치만 보기에는 겨울이 훨씬 더 예쁜 거 같아요!',
-    },
-    {
-        id: '2',
-        title: '이치란 웨이팅 미쳐요 :(',
-        image: require('../../assets/images/ichiran.jpeg'),
-        name: '강냉이 2',
-        date: '2023-11-14',
-        recommendations: 0,
-        content: '이치란 사람 너무 많아요. 거의 다 한국인인데 들어가는 데에 2시간 걸렸어요.'
-    },
-    {
-        id: '3',
-        title: '이치란 웨이팅 미쳐요 :(',
-        image: require('../../assets/images/ichiran.jpeg'),
-        name: '강냉이 2',
-        date: '2023-11-14',
-        recommendations: 0,
-        content: '이치란 사람 너무 많아요. 거의 다 한국인인데 들어가는 데에 2시간 걸렸어요.'
-    },
-    {
-        id: '4',
-        title: '오도리 공원 와봤어요!',
-        image: require('../../assets/images/Hokkaido/odoripark.png'),
-        name: '강냉이 1',
-        date: '2024-08-01',
-        recommendations: 3,
-        content: '확실히 여름에 오니까 춥지도 않고, 공원에서 돌아다니기 좋아요. 그치만 보기에는 겨울이 훨씬 더 예쁜 거 같아요!',
-    },
-    {
-        id: '5',
-        title: '이치란 웨이팅 미쳐요 :(',
-        image: require('../../assets/images/ichiran.jpeg'),
-        name: '강냉이 2',
-        date: '2023-11-14',
-        recommendations: 0,
-        content: '이치란 사람 너무 많아요. 거의 다 한국인인데 들어가는 데에 2시간 걸렸어요.'
-    },
-    {
-        id: '6',
-        title: '이치란 웨이팅 미쳐요 :(',
-        image: require('../../assets/images/ichiran.jpeg'),
-        name: '강냉이 2',
-        date: '2023-11-14',
-        recommendations: 0,
-        content: '이치란 사람 너무 많아요. 거의 다 한국인인데 들어가는 데에 2시간 걸렸어요.'
-    },
-    {
-        id: '7',
-        title: '오도리 공원 와봤어요!',
-        image: require('../../assets/images/Hokkaido/odoripark.png'),
-        name: '강냉이 1',
-        date: '2024-08-01',
-        recommendations: 3,
-        content: '확실히 여름에 오니까 춥지도 않고, 공원에서 돌아다니기 좋아요. 그치만 보기에는 겨울이 훨씬 더 예쁜 거 같아요!',
-    },
-    {
-        id: '8',
-        title: '이치란 웨이팅 미쳐요 :(',
-        image: require('../../assets/images/ichiran.jpeg'),
-        name: '강냉이 2',
-        date: '2023-11-14',
-        recommendations: 0,
-        content: '이치란 사람 너무 많아요. 거의 다 한국인인데 들어가는 데에 2시간 걸렸어요.'
-    },
-    {
-        id: '9',
-        title: '이치란 웨이팅 미쳐요 :(',
-        image: require('../../assets/images/ichiran.jpeg'),
-        name: '강냉이 2',
-        date: '2023-11-14',
-        recommendations: 0,
-        content: '이치란 사람 너무 많아요. 거의 다 한국인인데 들어가는 데에 2시간 걸렸어요.'
-    },
-    // 나머지 데이터 생략
-];
-
-// BoardItem 컴포넌트를 정의하여 useNavigation 훅 사용 가능하게 만듦
 const BoardItem = ({ item }) => {
     const navigation = useNavigation();
 
@@ -101,18 +14,60 @@ const BoardItem = ({ item }) => {
         navigation.push('DetailBoard', { item });
     };
 
+    const imageUrl = item.boardImages && item.boardImages.length > 0 && item.boardImages[0].url
+        ? `${item.boardImages[0].url}`
+        : 'https://via.placeholder.com/100';
+
+    console.log(item.boardImages[0].url);
+
     return (
         <TouchableOpacity onPress={handlePress} style={styles.itemContainer}>
-            <Image source={item.image} style={styles.itemImage} />
-            <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
-            <Text style={styles.itemContents} numberOfLines={3}>{item.content}</Text>
-            <Text style={styles.itemRecommend}> 👍+{item.recommendations}</Text>
+            <Image source={{ uri: imageUrl }} style={styles.itemImage} />
+            <Text style={styles.itemTitle} numberOfLines={1}>{item.title || 'No Title'}</Text>
+            <Text style={styles.itemContents} numberOfLines={3}>{item.content || 'No Content'}</Text>
+            {/*<Text style={styles.itemRecommend}> 👍+{item.recommendations || 0}</Text>*/}
         </TouchableOpacity>
     );
 };
 
 const Main = () => {
     const navigation = useNavigation();
+    const { userToken } = useContext(AuthContext);
+    const [boardData, setBoardData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchBoardData = async () => {
+        try {
+            const response = await axios.get('https://ryoko-sketch.duckdns.org/api/notice', {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+            const sortedData = response.data.content.sort((a, b) => b.id - a.id);
+            setBoardData(sortedData);
+        } catch (error) {
+            console.error('Failed to fetch data:', error);
+            Alert.alert('Error', 'Failed to fetch board data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (userToken) {
+            fetchBoardData();
+        } else {
+            setLoading(true); // 토큰이 없을 때 로딩 상태 유지
+        }
+    }, [userToken]);
+
+    if (loading) {
+        return (
+            <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#ef4141" />
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
@@ -129,20 +84,21 @@ const Main = () => {
                     <Map style={{ paddingTop: '10' }} />
                 </View>
                 <View style={styles.section} />
-                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
-                                onPress={() => navigation.navigate('BoardView', { sampledata })}>
-                    <Text style={{ paddingLeft: 20, paddingTop: 10, fontSize: 18, fontWeight: 'bold' }}>요즘 핫한 소식 🔥🔥</Text>
+                <TouchableOpacity
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+                    onPress={() => navigation.navigate('BoardView')}
+                >
+                    <Text style={{ paddingLeft: 20, paddingTop: 10, fontSize: 18, fontWeight: 'bold' }}>핫한 최근 소식 🔥🔥</Text>
                     <Text style={{ paddingRight: 20, paddingTop: 10, fontSize: 14, color: '#ef4141' }}>더보기</Text>
                 </TouchableOpacity>
 
-                {/* Bottom part: Horizontal FlatList */}
                 <FlatList
-                    data={sampledata}
-                    renderItem={({ item }) => <BoardItem item={item} />} // BoardItem을 renderItem으로 전달
-                    keyExtractor={(item) => item.id}
-                    horizontal={true} // 가로 스크롤링
-                    showsHorizontalScrollIndicator={false} // 가로 스크롤 바 숨김
-                    contentContainerStyle={styles.flatListContainer} // 스타일 적용
+                    data={boardData}
+                    renderItem={({ item }) => <BoardItem item={item} />}
+                    keyExtractor={(item) => item.id.toString()}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.flatListContainer}
                 />
             </ScrollView>
         </SafeAreaView>

@@ -29,14 +29,14 @@ const Map = () => {
       {/* 두 번째 Rect (도호쿠) */}
       <TouchableOpacity
         style={{ position: 'absolute', left: 240, top: 130, width: 50, height: 80, }}
-        onPress={() => console.log('도호쿠 Rect pressed')}>
+        onPress={() => navigation.push('TohokuMap')}>
         <Text style={{ color: '#ffffff', fontWeight: 'bold', paddingTop: 35, paddingLeft: 10 }}>도호쿠</Text>
       </TouchableOpacity>
 
       {/* 세 번째 Rect (간토) */}
       <TouchableOpacity
         style={{ position: 'absolute', left: 230, top: 215, width: 50, height: 80 , }}
-        onPress={() => console.log('간토 Rect pressed')}>
+        onPress={() => navigation.push('GantoMap')}>
         <Text style={{ color: '#ffffff', fontWeight: 'bold', paddingTop: 25, paddingLeft: 10 }}>간토</Text>
       </TouchableOpacity>
 
@@ -50,7 +50,7 @@ const Map = () => {
       {/* 다섯 번째 Rect (간사이) */}
       <TouchableOpacity
         style={{ position: 'absolute', left: 155, top: 230, width: 70, height: 90, }}
-        onPress={() => console.log('간사이 Rect pressed')}>
+        onPress={() => navigation.push('GansaiMap')}>
         <Text style={{ color: '#ffffff', fontWeight: 'bold', paddingTop: 40, paddingLeft: 15 }}>간사이</Text>
       </TouchableOpacity>
 

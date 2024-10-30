@@ -16,14 +16,14 @@ const Login = ({ navigation }) => {
         >
             <TouchableOpacity style={styles.loginButton}
                 onPress={() => navigation.push('DetailLogin')}>
-                <Text style={styles.loginText}>Log in</Text>
+                <Text style={styles.loginText}>시작하기</Text>
             </TouchableOpacity>
         
             {/* Sign up link */}
             <Text style={styles.signupText}>
-                Don’t have an account?{' '}
+                계정이 없으신가요?{'  '}
                 <Text style={styles.signupLink} onPress={() => navigation.navigate('SignUp')}>
-                Sign up
+                회원가입
                 </Text>
             </Text>
         </ImageBackground>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   signupText: {
-    color: '#ef4141',
+    color: '#000000',
     fontSize: 18,
     position: 'absolute',
     bottom: 100,

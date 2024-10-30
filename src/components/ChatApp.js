@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { StatusBar, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { database, auth } from '../../firebase';  // Firebase 설정을 가져옴
+import { database } from '../../firebase';  // Firebase 설정을 가져옴
 import { ref, push, onValue } from 'firebase/database';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from '../contexts/AuthContext';
 
 import TopLyoko from '../../assets/svg/TopLyoko.svg';
 
@@ -25,8 +26,36 @@ const ChatApp = ({ route, navigation }) => {
   const { chatId, otherUser } = route.params; // route에서 chatId와 상대방 사용자 정보 전달 받음
   const [message, setMessage] = useState('');            // 입력한 메시지
   const [messages, setMessages] = useState([]);          // 채팅 메시지 목록
-  const currentUser = auth.currentUser;                  // 현재 로그인한 사용자
+  const [currentUser, setCurrentUser] = useState(null);  // 현재 사용자 정보
   const scrollView = useRef();
+  const { userToken } = useContext(AuthContext); // AuthContext에서 userToken 가져오기
+
+  // API를 통해 현재 사용자 정보 가져오기
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('https://ryoko-sketch.duckdns.org/api/profile', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+            'Content-Type': 'application/json'
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setCurrentUser(data);  // API에서 받아온 사용자 정보를 currentUser에 설정
+          console.log('현재 사용자 정보:', data);
+        } else {
+          console.error('사용자 정보를 가져오는 데 실패했습니다:', response.statusText);
+        }
+      } catch (error) {
+        console.error('사용자 정보를 가져오는 중 오류 발생:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, [userToken]);
 
   // Firebase에서 메시지 가져오기
   useEffect(() => {
@@ -52,7 +81,7 @@ const ChatApp = ({ route, navigation }) => {
     const messagesRef = ref(database, `chats/${chatId}/messages`);
     push(messagesRef, {
       text: message,
-      user: currentUser.email || "Anonymous",  // 사용자 이메일 저장
+      user: currentUser?.email || "Anonymous",  // 사용자 이메일 저장
       timestamp: Date.now(),  // 타임스탬프 추가
     })
     .then(() => {
@@ -101,7 +130,7 @@ const ChatApp = ({ route, navigation }) => {
         {messages.map((msg) => (
           <Message
             key={msg.id}
-            isLeft={msg.user !== currentUser.email}  // 자신과 상대방 메시지 구분
+            isLeft={msg.user !== currentUser?.email}  // 자신과 상대방 메시지 구분
             message={msg.text}
             user={msg.user}
             timestamp={msg.timestamp}  // 타임스탬프 전달

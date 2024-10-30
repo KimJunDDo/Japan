@@ -1,102 +1,167 @@
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, TextInput, Switch, TouchableOpacity, Image, ScrollView, StyleSheet, Modal } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { SafeAreaView, View, Text, TextInput, Switch, TouchableOpacity, Image, ScrollView, StyleSheet, Modal, Alert } from 'react-native';
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { AuthContext } from '../contexts/AuthContext';
+import * as ImagePicker from 'react-native-image-picker';
+import axios from 'axios'; // axios 추가
 
-const EditProfile = ({ route, navigation}) => {
-    const [nickname, setNickname] = useState('');
-    const [sex, setSex] = useState('');
-    const [birth, setBirth] = useState('');
-    const [country, setCountry] = useState('');
+const EditProfile = ({ route, navigation }) => {
+  const [profileData, setProfileData] = useState([]);
 
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [isEnabled, setIsEnabled] = useState(true);
-    const [userData, setUserData] = useState(null);  // 사용자 데이터를 저장할 상태
-    const [user, setUser] = useState(null); // 인증된 사용자 정보를 저장할 상태
-    const [loading, setLoading] = useState(true);    // 로딩 상태 추가
+  const [nickname, setNickname] = useState('');
+  const [sex, setSex] = useState('');
+  const [birth, setBirth] = useState('');
+  const [country, setCountry] = useState('');
 
-    const db = getFirestore();                       // Firestore 인스턴스
-    const auth = getAuth();                          // Firebase 인증 인스턴스
+  const [imageUri, setImageUri] = useState(null);
+  const [imageName, setImageName] = useState('');
+  const [imageType, setImageType] = useState('');
 
-    useEffect(() => {
-      const fetchUserData = async (uid) => {
-        const docRef = doc(db, 'users', uid);         // Firestore에서 사용자 데이터 참조
-        const docSnap = await getDoc(docRef);         // Firestore에서 데이터 가져오기
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(true);
+  const [userData, setUserData] = useState(null); // 사용자 데이터를 저장할 상태
+  const [user, setUser] = useState(null); // 인증된 사용자 정보를 저장할 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+
+  const { userToken } = useContext(AuthContext); // AuthContext에서 userToken 가져오기
+  console.log(userToken);
+
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  const onPressModalOpen = () => {
+    console.log("개인정보 수정창을 여는 중입니다.");
+    setIsModalVisible(true);
+  };
+
+  const onPressModalClose = () => {
+    console.log("개인정보 수정창을 닫는 중입니다.");
+    setIsModalVisible(false);
+  };
+
+  const handleChoosePhoto = async () => {
+    try {
+      const response = await ImagePicker.launchImageLibrary({
+        mediaType: 'photo',
+        quality: 1,
+      });
+      
+      if (!response.didCancel && response.assets && response.assets[0].uri) {
+        const selectedImage = response.assets[0];
+        setImageUri(selectedImage.uri);
+        setImageName(selectedImage.fileName || 'profile_photo');
+        setImageType(selectedImage.type);
   
-        if (docSnap.exists()) {
-          setUserData(docSnap.data());               // 가져온 데이터를 상태에 저장
-        } else {
-          console.log("No such document!");
-        }
-        setLoading(false);                           // 로딩 완료
-      };
+        console.log("Selected Image URI:", selectedImage.uri);
+        
+        // 이미지 업로드 함수 호출
+        await handleUploadPhoto();
+      }
+    } catch (error) {
+      console.error('Error choosing photo:', error);
+      Alert.alert('Error', 'An error occurred while choosing the photo.');
+    }
+  };
+  
+  const handleUploadPhoto = async () => {
+    try {
+      if (!imageUri || !imageName || !imageType) {
+        Alert.alert('Error', 'Image data is missing.');
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append('newProfileImage', {
+        uri: imageUri,
+        name: imageName,
+        type: imageType,
+      });
+  
+      console.log('FormData:', formData);
+  
+      const response = await axios.put('https://ryoko-sketch.duckdns.org/api/profile/image', formData, {
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+        },
+      });
+  
+      if (response.status === 200) {
+        Alert.alert('프로필 사진 등록 완료!', '프로필을 등록해주셔서 감사합니다.');
+        setImageUri(null);
+      } else {
+        Alert.alert('Error', response.data.message || '프로필 사진 등록에 실패하였습니다.');
+      }
+    } catch (error) {
+      console.error('Image upload error:', error);
+      Alert.alert('Error', 'An error occurred while uploading the image.');
+    }
+  };
 
-      // Firebase 인증 상태를 감지하여 로그인된 사용자의 UID로 Firestore에서 데이터 가져오기
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setUser(user); // user 상태 저장
-          fetchUserData(user.uid);                   // 사용자가 있으면 UID로 데이터 가져오기
-        } else {
-          console.log('User is not logged in');
-          setLoading(false);                         // 사용자가 없으면 로딩 상태 해제
-        }
+  const handleSetting = async () => {
+    try {
+      // API 호출을 통해 회원가입 요청
+      const response = await fetch('https://ryoko-sketch.duckdns.org/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`,
+        },
+        body: JSON.stringify({
+          nickname: nickname,
+          gender: sex,
+          birth: birth,
+          nationality: country
+        }),
       });
 
-      return unsubscribe;                            // 컴포넌트 언마운트 시 리스너 해제
-    }, []);
+      const data = await response.json();
 
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
-    const onPressModalOpen = () => {
-        console.log("개인정보 수정창을 여는 중입니다.")
-        setIsModalVisible(true);
-    };
-
-    const onPressModalClose = () => {
-        console.log("개인정보 수정창을 닫는 중입니다.")
-        setIsModalVisible(false);
-    };
-
-    const handleSetting = async () => {
-        try {
-          if (user) {  // user가 있을 때만 Firestore에 설정
-            const userRef = doc(db, 'users', user.uid);  // Firestore에서 사용자 문서 참조
-      
-            // Firestore에 사용자 정보 업데이트
-            await updateDoc(userRef, {
-              nickname: nickname,
-              sex: sex,
-              birth: birth,
-              country: country,
-            });
-      
-            setIsModalVisible(false);  // 모달을 닫습니다.
-          } else {
-            console.log("User not logged in.");
-          }
-        } catch (error) {
-          console.log(error.message);
-        }
-      };
-
-    if (loading) {
-      return (
-        <SafeAreaView style={styles.safeArea}>
-          <Text>Loading...</Text>
-        </SafeAreaView>
-      );
+      if (response.ok) {
+        console.log('User profile updated successfully:', data);
+        Alert.alert('프로필 정보 등록 완료!', '프로필을 등록해주셔서 감사합니다.');
+        // 회원가입 성공 후 DetailLogin 페이지로 이동
+        navigation.push('DetailLogin');
+      } else {
+        console.log('Profile update failed:', data.message || 'Unknown error');
+        Alert.alert('프로필 정보 수정 실패', data.message || '오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.log('Error updating profile:', error);
+      {/*Alert.alert('프로필 수정 오류', '오류가 발생했습니다. 다시 시도하세요.');*/}
     }
+  };
+
+  const fetchProfileData = async () => {
+    try {
+        const response = await axios.get('https://ryoko-sketch.duckdns.org/api/profile', {
+            headers: {
+                'Authorization': `Bearer ${userToken}`
+            }
+        });
+        setProfileData(response.data);  // content 배열을 상태로 설정
+    } catch (error) {
+        console.error('Failed to fetch data:', error);
+        Alert.alert('Error', 'Failed to fetch board data');
+    } finally {
+        setLoading(false);
+    }
+};
+
+console.log('Profile Data:', profileData);  // 데이터 구조 확인
+
+useEffect(() => {
+    fetchProfileData();
+}, []);
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View 
-        style={styles.header}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={{paddingLeft: 5}}>취소</Text>
+          <Text style={{ paddingLeft: 5 }}>취소</Text>
         </TouchableOpacity>
-        <Text style={{ fontSize: 16, fontWeight: 'bold', }}>프로필 수정</Text>
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>프로필 수정</Text>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={{ color: '#ef4141', paddingRight: 5}}>완료</Text>
+          <Text style={{ color: '#ef4141', paddingRight: 5 }}>완료</Text>
         </TouchableOpacity>
       </View>
 
@@ -119,47 +184,48 @@ const EditProfile = ({ route, navigation}) => {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>프로필 설정</Text>
-          <View style={styles.settingRow}>
+          <TouchableOpacity onPress={handleChoosePhoto} style={styles.settingRow}>
             <Text style={styles.settingText}>프로필 사진</Text>
             <Image
               style={styles.profileImage}
-              source={require('../../assets/images/heartping.jpeg')}
-            />
-          </View>
+              source={{ uri: profileData.profileImageUrl }}
+              />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.settingRow} onPress={onPressModalOpen}>
             <Text style={styles.settingText}>닉네임</Text>
-            {userData && userData.nickname ? (
-                <Text style={styles.subText}>{userData.nickname}</Text>
+            {profileData && profileData.nickname ? (
+              <Text style={styles.subText}>{profileData.nickname}</Text>
             ) : (
-                <Text style={styles.subText}>이름을 설정해주세요</Text>
+              <Text style={styles.subText}>이름을 설정해주세요</Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity style={styles.settingRow} onPress={onPressModalOpen}>
             <Text style={styles.settingText}>성별</Text>
-            {userData && userData.sex ? (
-                <Text style={styles.subText}>{userData.sex}</Text>
+            {profileData && profileData.gender ? (
+              <Text style={styles.subText}>{profileData.gender}</Text>
             ) : (
-                <Text style={styles.subText}>성별을 설정해주세요</Text>
+              <Text style={styles.subText}>성별을 설정해주세요</Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity style={styles.settingRow} onPress={onPressModalOpen}>
             <Text style={styles.settingText}>출생년도</Text>
-            {userData && userData.birth ? (
-                <Text style={styles.subText}>{userData.birth}</Text>
+            {profileData && profileData.birth ? (
+              <Text style={styles.subText}>{profileData.birth}</Text>
             ) : (
-                <Text style={styles.subText}>출생년도를 설정해주세요</Text>
+              <Text style={styles.subText}>출생년도를 설정해주세요</Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity style={styles.settingRow} onPress={onPressModalOpen}>
             <Text style={styles.settingText}>국적</Text>
-            {userData && userData.country ? (
-                <Text style={styles.subText}>{userData.country}</Text>
+            {profileData && profileData.nationality ? (
+              <Text style={styles.subText}>{profileData.nationality}</Text>
             ) : (
-                <Text style={styles.subText}>국적을 설정해주세요</Text>
+              <Text style={styles.subText}>국적을 설정해주세요</Text>
             )}
-          </TouchableOpacity> 
+          </TouchableOpacity>
         </View>
 
+        {/* 고객 지원 및 기타 설정 */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>고객 지원</Text>
           <TouchableOpacity style={styles.settingRow}>
@@ -177,85 +243,51 @@ const EditProfile = ({ route, navigation}) => {
           </View>
         </View>
 
+        {/* Modal */}
         <View style={{ marginTop: 400 }}>
-                <Modal
-                    animationType="slide"
-                    visible={isModalVisible}
-                    transparent={true}
-                >
-                    <View style={styles.modalView}>
-                        <View style={{width: '150%'}}>
-                            <View style={{alignItems: 'center'}}>
-                            <Text style={styles.sectionTitle}>프로필 수정</Text>
-                            </View>
-                            <TextInput
-                            placeholder="닉네임"
-                            value={nickname}
-                            onChangeText={text => setNickname(text)}
-                            style={{
-                                backgroundColor: 'white',
-                                paddingHorizontal: 15,
-                                paddingVertical: 10,
-                                borderRadius: 10,
-                                borderWidth:1,
-                                borderColor: '#EF4141',
-                                marginTop: 8,
-                            }}
-                            />
-                            <TextInput
-                            placeholder="성별 (남, 여)"
-                            value={sex}
-                            onChangeText={text => setSex(text)}
-                            style={{
-                                backgroundColor: 'white',
-                                paddingHorizontal: 15,
-                                paddingVertical: 10,
-                                borderRadius: 10,
-                                borderWidth:1,
-                                borderColor: '#EF4141',
-                                marginTop: 8,
-                            }}
-                            />
-                            <TextInput
-                            placeholder="생년월일 (2001)"
-                            value={birth}
-                            onChangeText={text => setBirth(text)}
-                            style={{
-                                backgroundColor: 'white',
-                                paddingHorizontal: 15,
-                                paddingVertical: 10,
-                                borderRadius: 10,
-                                borderWidth:1,
-                                borderColor: '#EF4141',
-                                marginTop: 8,
-                            }}
-                            />
-                            <TextInput
-                            placeholder="국적 (한국, 일본)"
-                            value={country}
-                            onChangeText={text => setCountry(text)}
-                            style={{
-                                backgroundColor: 'white',
-                                paddingHorizontal: 15,
-                                paddingVertical: 10,
-                                borderRadius: 10,
-                                borderWidth:1,
-                                borderColor: '#EF4141',
-                                marginTop: 8,
-                            }}
-                            />
-                        </View>
-                        <View style={{width: '60%', justifyContent: 'center', alignItems: 'center', marginTop: 15, flexDirection: 'row'}}>
-                            <TouchableOpacity style={{backgroundColor: '#EF4141', width: '100%', padding: 13, borderRadius: 10, alignItems: 'center', marginRight: 10}} onPress={handleSetting}>
-                                <Text style={{color: 'white'}}>저장하기</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{backgroundColor: '#EF4141', width: '100%', padding: 13, borderRadius: 10, alignItems: 'center'}} onPress={onPressModalClose}>
-                                <Text style={{color: 'white'}}>돌아가기</Text>
-                            </TouchableOpacity>
-                        </View>                    
-                    </View>
-                </Modal>
+          <Modal animationType="slide" visible={isModalVisible} transparent={true}>
+            <View style={styles.modalView}>
+              <View style={{ width: '150%' }}>
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={styles.sectionTitle}>프로필 수정</Text>
+                </View>
+                <TextInput
+                  placeholder="이름"
+                  value={nickname}
+                  onChangeText={text => setNickname(text)}
+                  style={styles.inputStyle}
+                />
+                <TextInput
+                  placeholder="성별 (MALE or FEMALE)"
+                  value={sex}
+                  onChangeText={text => setSex(text)}
+                  style={styles.inputStyle}
+                />
+                <TextInput
+                  placeholder="생년월일 (0000-00-00)"
+                  value={birth}
+                  onChangeText={text => setBirth(text)}
+                  style={styles.inputStyle}
+                />
+                <TextInput
+                  placeholder="국적 (KOREAN OR JAPANESE)"
+                  value={country}
+                  onChangeText={text => setCountry(text)}
+                  style={styles.inputStyle}
+                />
+              </View>
+              <View style={styles.modalButtonContainer}>
+                <TouchableOpacity style={styles.modalButton} onPress={async () => { await handleSetting();  // 비동기 함수 실행 후
+                  onPressModalClose(); }}>
+                  <Text style={{ color: 'white' }}>저장하기</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalButton} onPress={onPressModalClose}>
+                  <Text style={{ color: 'white' }}>돌아가기</Text>
+                </TouchableOpacity>
+              </View>
             </View>
+          </Modal>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -274,10 +306,6 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     flexGrow: 1,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
   },
   section: {
     padding: 15,
@@ -316,20 +344,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#000000',
     shadowOffset: {
-        width: 3,
-        height: 5,
+      width: 3,
+      height: 5,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-},
-modalTextStyle: {
-    color: '#17191c',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontSize: 15,
-    marginBottom: 10
-},
+  },
+  modalButtonContainer: {
+    width: '60%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15,
+    flexDirection: 'row',
+  },
+  modalButton: {
+    backgroundColor: '#EF4141',
+    width: '100%',
+    padding: 13,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  inputStyle: {
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#EF4141',
+    marginTop: 8,
+  },
 });
 
 export default EditProfile;

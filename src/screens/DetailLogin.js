@@ -104,7 +104,7 @@ const DetailLogin = () => {
       {/* Email Input */}
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="이메일을 입력해주세요"
         keyboardType="email-address"
         value={email}
         onChangeText={text => setEmail(text)}
@@ -115,7 +115,7 @@ const DetailLogin = () => {
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder="비밀번호를 입력해주세요"
           value={password}
           onChangeText={text => setPassword(text)}
           secureTextEntry={!passwordVisible}
@@ -129,17 +129,17 @@ const DetailLogin = () => {
 
         {/* API 로그인 버튼 */}
         <TouchableOpacity style={styles.loginInput} onPress={handleApiLogin}>
-          <Text style={styles.loginText}>API Log in</Text>
+          <Text style={styles.loginText}>로그인</Text>
         </TouchableOpacity>
 
-        {/* Firebase 로그인 버튼 */}
+      {/*
         <TouchableOpacity style={styles.loginInput} onPress={handleFirebaseLogin}>
           <Text style={styles.loginText}>Firebase Log in</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* Social login options */}
-      <Text style={styles.orText}>or</Text>
+      <Text style={styles.orText}>또는</Text>
       <View style={styles.socialButtonsContainer}>
         <TouchableOpacity style={styles.socialButton}>
           <Icon name="facebook" size={25} color="#4267B2" />
@@ -154,9 +154,9 @@ const DetailLogin = () => {
 
       {/* Sign up link */}
       <Text style={styles.signupText}>
-        Don’t have an account?{' '}
+      계정이 없으신가요?{'  '}
         <Text style={styles.signupLink} onPress={() => navigation.navigate('SignUp')}>
-          Sign up
+          회원가입
         </Text>
       </Text>
     </SafeAreaView>

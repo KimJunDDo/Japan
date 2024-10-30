@@ -18,16 +18,23 @@ import MyPage from './src/screens/MyPage';
 import Chat from './src/screens/Chat';
 import EditProfile from './src/screens/EditProfile';
 import Exchange from './src/screens/Exchange';
-import HokkaidoMap from './src/components/HokkaidoMap';
 import DetailScreen from './src/components/DetailScreen';
 import DetailBoard from './src/screens/DetailBoard';
 import BoardView from './src/screens/BoardView';
 import Post from './src/screens/Post';
 import ChatApp from './src/components/ChatApp';
 import ChatList from './src/screens/ChatList';
+import Todo from './src/screens/Todo';
+import HokkaidoMap from './src/components/HokkaidoMap';
+import TohokuMap from './src/components/TohokuMap';
+import GantoMap from './src/components/GantoMap';
+import GansaiMap from './src/components/GansaiMap';
 
 import app from './firebase';
 import { AuthProvider } from './src/contexts/AuthContext';  // AuthProvider 가져오기
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import Conversation from './src/screens/Conversation';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -85,7 +92,8 @@ const App = () => {
   };
 
   return (
-    <AuthProvider>  
+    <Provider store={store}>
+    <AuthProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
@@ -94,15 +102,22 @@ const App = () => {
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="Exchange" component={Exchange} />
-        <Stack.Screen name="HokkaidoMap" component={HokkaidoMap} />
         <Stack.Screen name="DetailScreen" component={DetailScreen} />
         <Stack.Screen name="DetailBoard" component={DetailBoard} />
         <Stack.Screen name="BoardView" component={BoardView} />
         <Stack.Screen name="Post" component={Post} />
         <Stack.Screen name="ChatApp" component={ChatApp} />
+        <Stack.Screen name="Todo" component={Todo} />
+        <Stack.Screen name="Conversation" component={Conversation} />
+        <Stack.Screen name="HokkaidoMap" component={HokkaidoMap} />
+        <Stack.Screen name="TohokuMap" component={TohokuMap} />
+        <Stack.Screen name="GantoMap" component={GantoMap} />
+        <Stack.Screen name="GansaiMap" component={GansaiMap} />
+
         </Stack.Navigator>
       </NavigationContainer>
-    </AuthProvider>  
+    </AuthProvider>
+    </Provider>  
   );
 };
 

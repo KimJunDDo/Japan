@@ -53,12 +53,11 @@ const SignUp = () => {
     <SafeAreaView style={styles.container}>
       {/* Welcome icon and text */}
       <Lyoko style={styles.Lyoko} />
-      <Text style={styles.welcomeText}>Welcome!</Text>
 
       {/* Email Input */}
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="이메일"
         keyboardType="email-address"
         value={email}
         onChangeText={text => setEmail(text)}
@@ -69,7 +68,7 @@ const SignUp = () => {
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder="비밀번호"
           value={password}
           onChangeText={text => setPassword(text)}
           secureTextEntry={!passwordVisible}
@@ -83,7 +82,7 @@ const SignUp = () => {
 
         <TextInput
           style={styles.input}
-          placeholder="Confirm Password"
+          placeholder="비밀번호 확인"
           value={confirmPassword}
           onChangeText={text => setConfirmPassword(text)}
           secureTextEntry={!passwordVisible}
@@ -96,7 +95,7 @@ const SignUp = () => {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.loginInput} onPress={handleSignUp}>
-          <Text style={styles.loginText}>Register</Text>
+          <Text style={styles.loginText}>회원가입</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -115,9 +114,10 @@ const styles = StyleSheet.create({
     marginLeft: 50,
   },
   welcomeText: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 40,
+    marginTop: -20
   },
   input: {
     width: '100%',

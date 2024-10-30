@@ -8,6 +8,11 @@ const DetailBoard = ({ route }) => {
   const navigation = useNavigation();
   const { item } = route.params;
 
+  console.log(item);
+  const imageUrl = item.boardImages && item.boardImages.length > 0 && item.boardImages[0].url
+        ? `${item.boardImages[0].url}`
+        : 'https://via.placeholder.com/100';
+
   return (
     <SafeAreaView
             style={{
@@ -34,13 +39,14 @@ const DetailBoard = ({ route }) => {
       {/* Header Section */}
       <View style={styles.headerContainer}>
         <Image
-          source={ item.image }
+          source={{ uri: imageUrl }}
           style={styles.headerImage}
         />
       </View>
       {/* Details Section */}
       <View style={styles.detailsContainer}>
         <Text style={styles.detailsTitle}>{item.title}</Text>
+        <Text style={styles.detailsName}>{item.nickname}</Text>
         <Text style={styles.detailsDescription}>{item.content}</Text>
       </View>
       </ScrollView>
@@ -101,6 +107,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  detailsName: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 10,
+    textAlign: 'right',
   },
   detailsDescription: {
     fontSize: 16,

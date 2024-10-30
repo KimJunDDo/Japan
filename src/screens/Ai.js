@@ -24,10 +24,10 @@ const ChatScreen = () => {
     
         // ChatGPT API 호출 로직 (예시)
         try {
-            const response = await fetch('http://43.203.1.237:8080/api/gpt/question', {
+            const response = await fetch('https://ryoko-sketch.duckdns.org/api/gpt/question', {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer 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`,
+
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({

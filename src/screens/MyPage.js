@@ -17,10 +17,14 @@ const MyPage = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      navigation.replace('Login');
+      await signOut(auth); // Sign out the user from Firebase Auth
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }], // Reset navigation stack and redirect to Login
+      });
     } catch (error) {
-      console.log(error);
+      console.log('Logout error:', error);
+      Alert.alert('Logout Error', 'Failed to log out. Please try again.');
     }
   };
 

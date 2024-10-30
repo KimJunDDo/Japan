@@ -1,59 +1,85 @@
-import React, { useContext } from 'react';
-import { TouchableOpacity, View, Text, FlatList, Image, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { TouchableOpacity, View, Text, FlatList, Image, StyleSheet, SafeAreaView, StatusBar, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Octicons from 'react-native-vector-icons/Octicons';
+import axios from 'axios';
 import { AuthContext } from '../contexts/AuthContext';
-
 import TopLyoko from '../../assets/svg/TopLyoko.svg';
 
-// BoardItem 컴포넌트를 정의하여 useNavigation 훅 사용 가능하게 만듦
 const BoardItem = ({ item }) => {
+    const navigation = useNavigation();
+    // 첫 번째 이미지 URL 가져오기 또는 기본 이미지 설정
+    const imageUrl = item.boardImages && item.boardImages.length > 0 && item.boardImages[0].url
+        ? `${item.boardImages[0].url}`
+        : 'https://via.placeholder.com/100';
+
+    console.log(item.boardImages[0].url);
+    const handlePress = () => {
+        navigation.push('DetailBoard', { item });
+    };
     return (
-        <View style={styles.itemContainer}>
-            <Image source={item.image} style={styles.itemImage} />
-            <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
-            <Text style={styles.itemContents} numberOfLines={3}>{item.content}</Text>
-            <Text style={styles.itemRecommend}> 👍+{item.recommendations}</Text>
-        </View>
+        <TouchableOpacity onPress={handlePress} style={styles.itemContainer}>
+            <Image source={{ uri: imageUrl }} style={styles.itemImage} />
+            <Text style={styles.itemTitle} numberOfLines={1}>{item.title || 'No Title'}</Text>
+            <Text style={[styles.itemContents]} numberOfLines={1}>{item.nickname || 'No User'}</Text>
+            <Text style={styles.itemContents} numberOfLines={3}>{item.content || 'No Content'}</Text>
+        </TouchableOpacity>
     );
 };
 
-const BoardView = ({ route }) => {
+const BoardView = () => {
     const navigation = useNavigation();
-    const { sampledata } = route.params;  // Main에서 전달된 sampledata 받기
     const { userToken } = useContext(AuthContext);
-    console.log(userToken);
+    const [boardData, setBoardData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    // 데이터 가져오는 함수
+    const fetchBoardData = async () => {
+        try {
+            const response = await axios.get('https://ryoko-sketch.duckdns.org/api/notice', {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+            setBoardData(response.data.content);  // content 배열을 상태로 설정
+        } catch (error) {
+            console.error('Failed to fetch data:', error);
+            Alert.alert('Error', 'Failed to fetch board data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    console.log('Board Data:', boardData);  // 데이터 구조 확인
+
+    useEffect(() => {
+        fetchBoardData();
+    }, []);
+
+    if (loading) {
+        return (
+            <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#ef4141" />
+            </SafeAreaView>
+        );
+    }
 
     return (
-        <SafeAreaView
-            style={{
-            width: '100%',
-            backgroundColor: 'white',
-            flex: 1,
-        }}>
-        {/* 상단 네비게이션 */}
-        <View
-            style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingLeft: 10,
-                paddingRight: 10,
-            }}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Text style={{ paddingLeft: 5, paddingBottom: 10 }}>취소</Text>
-            </TouchableOpacity>
-            <TopLyoko />
-            <TouchableOpacity>
-                <Text style={{ color: '#ffffff', paddingRight: 5, paddingBottom: 10 }}>완료</Text>
-            </TouchableOpacity>
-        </View>
+        <SafeAreaView style={{ width: '100%', backgroundColor: 'white', flex: 1 }}>
+            <StatusBar backgroundColor="white" barStyle="dark-content" />
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Text style={styles.headerText}>취소</Text>
+                </TouchableOpacity>
+                <TopLyoko />
+                <TouchableOpacity>
+                    <Text style={[styles.headerText, { color: '#ffffff' }]}>완료</Text>
+                </TouchableOpacity>
+            </View>
+
             <FlatList
-                data={sampledata}
+                data={boardData}
                 renderItem={({ item }) => <BoardItem item={item} />}
-                keyExtractor={(item) => item.id}
-                numColumns={3}  // 3열로 설정
+                keyExtractor={(item) => item.id.toString()}  // long 타입 id를 문자열로 변환
+                numColumns={3}
                 contentContainerStyle={styles.flatListContainer}
                 columnWrapperStyle={styles.columnWrapper}
                 showsVerticalScrollIndicator={false}
@@ -63,6 +89,17 @@ const BoardView = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    headerText: {
+        paddingLeft: 5,
+        paddingBottom: 10,
+    },
     flatListContainer: {
         paddingHorizontal: 10,
         paddingBottom: 10,
@@ -74,7 +111,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 5,
         marginVertical: 10,
-        width: '33%',  // 3열 레이아웃에서 각각 30% 너비로 설정
+        width: '33%',
         padding: 5,
     },
     itemImage: {
@@ -90,32 +127,6 @@ const styles = StyleSheet.create({
     itemContents: {
         fontSize: 12,
         marginBottom: 5,
-    },
-    itemRecommend: {
-        fontSize: 12,
-        color: '#333',
-        textAlign: 'center',
-    },
-    floatingButton: {
-        position: 'absolute',
-        bottom: 50,
-        right: 30,
-        backgroundColor: '#ef4141',  // 버튼 색상
-        width: 50,
-        height: 50,
-        borderRadius: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5,
-    },
-    floatingButtonText: {
-        color: 'white',
-        fontSize: 30,
-        lineHeight: 30,
     },
 });
 
