@@ -43,8 +43,8 @@ const Map = () => {
       {/* 네 번째 Rect (주고쿠) */}
       <TouchableOpacity
         style={{ position: 'absolute', left: 90, top: 270, width: 60, height: 75, }}
-        onPress={() => console.log('주고쿠 Rect pressed')}>
-        <Text style={{ color: '#ffffff', fontWeight: 'bold', paddingTop: 16, paddingLeft: 8 }}>도호쿠</Text>
+        onPress={() => navigation.push('JugokuMap')}>
+        <Text style={{ color: '#ffffff', fontWeight: 'bold', paddingTop: 16, paddingLeft: 8 }}>주고쿠</Text>
       </TouchableOpacity>
 
       {/* 다섯 번째 Rect (간사이) */}
@@ -57,7 +57,7 @@ const Map = () => {
       {/* 일곱 번째 Rect (규슈) */}
       <TouchableOpacity
         style={{ position: 'absolute', left: 40, top: 310, width: 45, height: 75, }}
-        onPress={() => console.log('규슈 Rect pressed')}>
+        onPress={() => navigation.push('KyushuMap')}>
         <Text style={{ color: '#ffffff', fontWeight: 'bold', paddingTop: 20, paddingLeft: 12  }}>큐슈</Text>
       </TouchableOpacity>
     </View>

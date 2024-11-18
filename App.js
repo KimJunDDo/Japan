@@ -29,6 +29,8 @@ import HokkaidoMap from './src/components/HokkaidoMap';
 import TohokuMap from './src/components/TohokuMap';
 import GantoMap from './src/components/GantoMap';
 import GansaiMap from './src/components/GansaiMap';
+import JugokuMap from './src/components/JugokuMap';
+import KyushuMap from './src/components/KyushuMap';
 
 import app from './firebase';
 import { AuthProvider } from './src/contexts/AuthContext';  // AuthProvider 가져오기
@@ -113,7 +115,8 @@ const App = () => {
         <Stack.Screen name="TohokuMap" component={TohokuMap} />
         <Stack.Screen name="GantoMap" component={GantoMap} />
         <Stack.Screen name="GansaiMap" component={GansaiMap} />
-
+        <Stack.Screen name="JugokuMap" component={JugokuMap} />
+        <Stack.Screen name="KyushuMap" component={KyushuMap} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

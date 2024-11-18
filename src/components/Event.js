@@ -4,9 +4,9 @@ import React from 'react'
 const eventInfo = [
     {
         id: 1,
-        name: 'Best 상품 한눈에 보기',
-        image: require('../../assets/images/event1.png'),
-        url: 'https://www.myrealtrip.com/promotions/osaka-tna?utm_source=community&utm_medium=affiliate&utm_campaign=purchase_japan_freeosk_banner'
+        name: '돈키호테 할인 쿠폰',
+        image: require('../../assets/images/event6.png'),
+        url: 'https://japanportal.donki-global.com/coupon/cp001_en.html'
     },
     {
         id: 2,

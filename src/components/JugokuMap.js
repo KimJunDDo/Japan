@@ -3,10 +3,10 @@ import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import TopLyoko from '../../assets/svg/TopLyoko.svg';
-import GansaiCourse from './GansaiCourse';
-import GansaiPlace from './GansaiPlace';
+import JugokuCourse from './JugokuCourse';
+import JugokuPlace from './JugokuPlace';
 
-const GansaiMap = ({ route, navigation }) => {
+const JugokuMap = ({ route, navigation }) => {
   const [activeTab, setActiveTab] = useState('place'); // 현재 활성화된 탭 상태
 
   return (
@@ -41,7 +41,7 @@ const GansaiMap = ({ route, navigation }) => {
               onPress={() => setActiveTab('place')} // 장소 추천 탭 활성화
             >   
                 <Text style={activeTab === 'place' ? styles.tabTextActive : styles.tabTextInactive}>
-                    간사이 장소 추천
+                    주고쿠 장소 추천
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -49,19 +49,19 @@ const GansaiMap = ({ route, navigation }) => {
               onPress={() => setActiveTab('course')} // 코스 추천 탭 활성화
             >
                 <Text style={activeTab === 'course' ? styles.tabTextActive : styles.tabTextInactive}>
-                    간사이 코스 추천
+                    주고쿠 코스 추천
                 </Text>
             </TouchableOpacity>
         </View>
         
         {/* 선택된 탭에 따라 컴포넌트 렌더링 */}
-        {activeTab === 'place' ? <GansaiPlace /> : <GansaiCourse />}
+        {activeTab === 'place' ? <JugokuPlace /> : <JugokuCourse />}
 
     </SafeAreaView>
   )
 }
 
-export default GansaiMap
+export default JugokuMap
 
 const styles = StyleSheet.create({
     container: {

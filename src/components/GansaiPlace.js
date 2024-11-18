@@ -5,75 +5,61 @@ import { useNavigation } from '@react-navigation/native';
 const data = [
   {
     id: '1',
-    title: '오도리 공원',
-    description: '꽃과 나무, 조각 작품들이 동서로 길게 나 있는 아름다운 공원',
-    location: '삿포로시',
-    image: require('../../assets/images/Hokkaido/odoripark.png'), // 이미지 URL 예시
-    url: 'https://www.google.com/maps/place/%EC%98%A4%EB%8F%84%EB%A6%AC+%EA%B3%B5%EC%9B%90/@43.0607521,141.3518612,17z/data=!3m1!4b1!4m6!3m5!1s0x5f0b295148c5d329:0xe6cb236ed20e09e!8m2!3d43.0607521!4d141.3544308!16s%2Fm%2F03c93pq?entry=ttu&g_ep=EgoyMDI0MTAyMS4xIKXMDSoASAFQAw%3D%3D'
+    title: '유니버셜 스튜디오 재팬',
+    description: '온가족 모두 즐거운 할리우드 영화 테마파크',
+    location: '오사카시',
+    image: require('../../assets/images/Gansai/o10.png'), // 이미지 URL 예시
+    url: 'https://www.google.com/maps/place/%EC%9C%A0%EB%8B%88%EB%B2%84%EC%84%A4+%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4+%EC%9E%AC%ED%8C%AC/@34.6656768,135.4297489,17z/data=!3m1!4b1!4m6!3m5!1s0x6000e0d083d5e25d:0x3605fe25303252aa!8m2!3d34.6656768!4d135.4323185!16zL20vMDczN3g1?authuser=0&entry=ttu&g_ep=EgoyMDI0MTEwNi4wIKXMDSoASAFQAw%3D%3D'
   },
   {
     id: '2',
-    title: 'TV 타워',
-    description: '삿포로의 랜드마크 중 하나로 1957년에 지어진 147m 높이의 송신탑',
-    location: '삿포로시',
-    image: require('../../assets/images/Hokkaido/tvtower.png'),
+    title: '덴포잔 대관람차',
+    description: '간사이 풍경을 한눈에 담을 수 있는 세계 최대 규모의 대관람차',
+    location: '오사카시',
+    image: require('../../assets/images/Gansai/o1.png'),
+    url: 'https://www.google.com/maps/place/%EB%8D%B4%ED%8F%AC%EC%9E%94+%EB%8C%80%EA%B4%80%EB%9E%8C%EC%B0%A8/@34.6562686,135.4283963,17z/data=!3m1!4b1!4m6!3m5!1s0x6000e88b5561e543:0xfe7be2a424a0c226!8m2!3d34.6562686!4d135.4309659!16zL20vMDZrN2M1?authuser=0&entry=ttu&g_ep=EgoyMDI0MTEwNi4wIKXMDSoASAFQAw%3D%3D'
   },
   {
     id: '3',
-    title: 'JR타워 전망대',
-    description: '삿포로 중심에서 일본 3대 야경 만끽',
-    location: '삿포로시',
-    image: require('../../assets/images/Hokkaido/JRTower.jpg'),
+    title: '도톤보리',
+    description: '화려한 네온사인 속 맛집 탐험! 오사카 NO.1 관광 명소',
+    location: '난바',
+    image: require('../../assets/images/Gansai/o4.png'),
+    url: 'https://www.google.com/maps/place/%EC%9D%BC%EB%B3%B8+%E3%80%92542-0071+%EC%98%A4%EC%82%AC%EC%B9%B4%EB%B6%80+%EC%98%A4%EC%82%AC%EC%B9%B4%EC%8B%9C+%EC%A3%BC%EC%98%A4%EA%B5%AC+%EB%8F%84%ED%86%A4%EB%B3%B4%EB%A6%AC/@34.668532,135.4938138,15z/data=!3m1!4b1!4m6!3m5!1s0x6000e71526dc6083:0xe43d6b861e80b709!8m2!3d34.6686471!4d135.5030983!16s%2Fg%2F1pxxyn9jt?authuser=0&entry=ttu&g_ep=EgoyMDI0MTEwNi4wIKXMDSoASAFQAw%3D%3D'
   },
   {
     id: '4',
-    title: '훗카이도청 구 본청사',
-    description: "훗카이도의 상징, 애칭은 '붉은 벽돌 청사'",
-    location: '삿포로시',
-    image: require('../../assets/images/Hokkaido/chungsa.jpg'),
+    title: '오사카 성',
+    description: "오사카를 상징하는 랜드마크이자 필수 관광 코스",
+    location: '오사카시',
+    image: require('../../assets/images/Gansai/o5.png'),
+    url: 'https://www.google.com/maps/place/%EC%98%A4%EC%82%AC%EC%B9%B4+%EC%84%B1/@34.6872571,135.5168424,16z/data=!4m10!1m2!2m1!1z7Jik7IKs7Lm0IOyEsQ!3m6!1s0x6000e0cd5c283afd:0xf01d07d5ca11e41!8m2!3d34.6872571!4d135.5258546!15sCg3smKTsgqzsubQg7ISxWg8iDeyYpOyCrOy5tCDshLGSAQZjYXN0bGXgAQA!16zL20vMDI0Yl9n?authuser=0&entry=ttu&g_ep=EgoyMDI0MTEwNi4wIKXMDSoASAFQAw%3D%3D'
   },
   {
     id: '5',
-    title: '삿포로시 시계탑',
-    description: '130년이 넘는 세월이 흐르는 국가 지정 중요 문화재',
-    location: '삿포로시',
-    image: require('../../assets/images/Hokkaido/clocktop.jpg'),
+    title: '오사카 역사 박물관',
+    description: '오사카의 역사와 전통을 체험할 수 있는 박물관',
+    location: '오사카시',
+    image: require('../../assets/images/Gansai/o6.png'),
+    url: 'https://www.google.com/maps/place/%EC%98%A4%EC%82%AC%EC%B9%B4+%EC%97%AD%EC%82%AC%EB%B0%95%EB%AC%BC%EA%B4%80/@34.6826141,135.5182279,17z/data=!3m2!4b1!5s0x6000e7318a1949fb:0x2a4a0ad09f4a1c29!4m6!3m5!1s0x6000e73225da9c47:0xe984837dc97fe2ca!8m2!3d34.6826141!4d135.5207975!16s%2Fm%2F0nbcw5c?authuser=0&entry=ttu&g_ep=EgoyMDI0MTEwNi4wIKXMDSoASAFQAw%3D%3D'
   },
   {
     id: '6',
-    title: '삿포로 맥주 박물관',
-    description: '일본의 유일한 맥주 박물관, 거대한 굴뚝도 챙겨봐야 할 포인트',
-    location: '삿포로시',
-    image: require('../../assets/images/Hokkaido/beermuseum.jpg'),
+    title: '난바 워크',
+    description: '200여 개의 매장이 모여 있는 지하 상점가',
+    location: '난바',
+    image: require('../../assets/images/Gansai/o9.png'),
+    url: 'https://www.google.com/maps/place/%EB%82%9C%EB%B0%94+%EC%9B%8C%ED%81%AC/@34.6670875,135.5004465,17z/data=!3m2!4b1!5s0x6000e71354c0fb87:0xa230d50a1d78f6a8!4m6!3m5!1s0x6000e76a9249a3ad:0x46da5440b1a266c!8m2!3d34.6670875!4d135.5030161!16s%2Fg%2F122x7vx8?authuser=0&entry=ttu&g_ep=EgoyMDI0MTEwNi4wIKXMDSoASAFQAw%3D%3D'
   },
   {
     id: '7',
-    title: '삿포로시 마루야마 동물원',
-    description: "2018년 '북극곰관' 오픈",
-    location: '삿포로시',
-    image: require('../../assets/images/Hokkaido/maruyama.jpg'),
+    title: '미나미센바',
+    description: "고급 매장과 분위기 있는 음식점들이 모여 있는 지역",
+    location: '오사카시',
+    image: require('../../assets/images/Gansai/o7.png'),
+    url: 'https://www.google.com/maps/place/%EC%9D%BC%EB%B3%B8+%E3%80%92542-0081+%EC%98%A4%EC%82%AC%EC%B9%B4%EB%B6%80+%EC%98%A4%EC%82%AC%EC%B9%B4%EC%8B%9C+%EC%A3%BC%EC%98%A4%EA%B5%AC+%EB%AF%B8%EB%82%98%EB%AF%B8%EC%84%BC%EB%B0%94/@34.676498,135.4939693,15z/data=!3m1!4b1!4m6!3m5!1s0x6000e717812dbc3d:0x3703b1b2426b458e!8m2!3d34.6762739!4d135.5045713!16s%2Fg%2F121p7224?authuser=0&entry=ttu&g_ep=EgoyMDI0MTEwNi4wIKXMDSoASAFQAw%3D%3D'
   },
-  {
-    id: '8',
-    title: '조잔케이 온천',
-    description: "삿포로에서 자동차로 약 1시간 거리의 온천지",
-    location: '삿포로시',
-    image: require('../../assets/images/Hokkaido/zozan.jpg'),
-  },
-  {
-    id: '9',
-    title: '치토세 아울렛 몰렐라',
-    description: "신치토세 공항에서 약 10분 거리",
-    location: '치토세시',
-    image: require('../../assets/images/Hokkaido/chitose.jpg'),
-  },
-  {
-    id: '10',
-    title: '오타루 운하',
-    description: "오타루를 대표하는 인기 관광지",
-    location: '오타루시',
-    image: require('../../assets/images/Hokkaido/otaru.jpg'),
-  },
+  
 ];
 
 const BoardItem = ({ item }) => {

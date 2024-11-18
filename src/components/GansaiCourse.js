@@ -3,22 +3,21 @@ import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, StyleSheet }
 
 const data = {
   "1일차": [
-    { id: '1', time: '오전 9:00', title: 'Kiritoshishinshindo', duration: '도보 15min', image: require('../../assets/images/ichiran.jpeg') },
-    { id: '2', time: '오전 10:00', title: 'Kodai-ji Zen Temple', duration: '도보 30min', image: 'https://example.com/image2.jpg' },
-    { id: '3', time: '오전 11:00', title: '% Arabica Kyoto Higashiyama', duration: '', image: 'https://example.com/image3.jpg' },
+    { id: '1', time: '오후 13:00', title: '덴포잔 대관람차', duration: '', image: require('../../assets/images/Gansai/o1.png') },
+    { id: '2', time: '오후 14:30', title: '범선형 관광선 산타마리아', duration: '도보 4min', image: require('../../assets/images/Gansai/o2.png') },
+    { id: '3', time: '오후 13:00', title: '오사카 스테이션 시티', duration: '지하철 33min', image: require('../../assets/images/Gansai/o3.png') },
+    { id: '4', time: '오후 13:00', title: '도톤보리', duration: '지하철 17min', image: require('../../assets/images/Gansai/o4.png') },
   ],
   "2일차": [
-    { id: '1', time: '오전 8:00', title: 'Kyoto Tower', duration: '도보 10min', image: 'https://example.com/image4.jpg' },
-    { id: '2', time: '오전 9:30', title: 'Fushimi Inari Shrine', duration: '도보 45min', image: 'https://example.com/image5.jpg' },
+    { id: '1', time: '오전 10:00', title: '오사카 성', duration: '', image: require('../../assets/images/Gansai/o5.png') },
+    { id: '2', time: '오후 12:00', title: '오사카 역사 박물관', duration: '도보 14min', image: require('../../assets/images/Gansai/o6.png') },
+    { id: '3', time: '오후 13:30', title: '미나미센바', duration: '지하철 17min', image: require('../../assets/images/Gansai/o7.png') },
+    { id: '4', time: '오후 15:00', title: '도큐핸즈 신사이바시점', duration: '도보 3min', image: require('../../assets/images/Gansai/o8.png') },
+    { id: '5', time: '오후 17:00', title: '난바 워크', duration: '도보 15min', image: require('../../assets/images/Gansai/o9.png') },
   ],
   "3일차": [
-    { id: '1', time: '오전 8:00', title: 'Kyoto Tower', duration: '도보 10min', image: 'https://example.com/image4.jpg' },
-    { id: '2', time: '오전 9:30', title: 'Fushimi Inari Shrine', duration: '도보 45min', image: 'https://example.com/image5.jpg' },
+    { id: '1', time: '오전 10:00', title: '유니버셜 스튜디오 재팬', duration: '', image: require('../../assets/images/Gansai/o10.png') },
   ],
-  "4일차": [
-    { id: '1', time: '오전 8:00', title: 'Kyoto Tower', duration: '도보 10min', image: 'https://example.com/image4.jpg' },
-    { id: '2', time: '오전 9:30', title: 'Fushimi Inari Shrine', duration: '도보 45min', image: 'https://example.com/image5.jpg' },
-  ]
 };
 
 const TimelineItem = ({ time, title, duration, image }) => (

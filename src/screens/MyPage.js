@@ -97,14 +97,14 @@ const MyPage = () => {
           <AntDesign name='right' size={20} color='#CDCDCD' style={{paddingRight: 15}} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.touchContainer}
+        {/*<TouchableOpacity style={styles.touchContainer}
           onPress={() => navigation.push('Weather')}>
           <View style={styles.leftContainer}>
             <MaterialCommunityIcons name='weather-cloudy' size={20} color='#000000' />
             <Text style={styles.textContainer}>날씨</Text>
           </View>
           <AntDesign name='right' size={20} color='#CDCDCD' style={{paddingRight: 15}} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={styles.touchContainer}
           onPress={() => navigation.push('Conversation')}>
