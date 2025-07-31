@@ -1,6 +1,6 @@
 <img width="500" height="1250" alt="Simulator Screenshot - iPhone 15 Pro - 2024-10-30 at 15 36 57" src="https://github.com/user-attachments/assets/5d5b5d9b-4d7c-4d5e-b49a-f6a0c01a93b3" />
 
-#Lyoko Sketch(Japan Travel)
+# Lyoko Sketch(Japan Travel)
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
