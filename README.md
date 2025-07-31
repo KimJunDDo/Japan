@@ -1,4 +1,10 @@
-<img width="500" height="1250" alt="Simulator Screenshot - iPhone 15 Pro - 2024-10-30 at 15 36 57" src="https://github.com/user-attachments/assets/5d5b5d9b-4d7c-4d5e-b49a-f6a0c01a93b3" />
+<img width="250" height="600" alt="Simulator Screenshot - iPhone 15 Pro - 2024-10-30 at 15 36 57" src="https://github.com/user-attachments/assets/5d5b5d9b-4d7c-4d5e-b49a-f6a0c01a93b3" /><img width="250" height="600" alt="Simulator Screenshot - iPhone 15 Pro - 2024-10-30 at 12 37 25 (1)" src="https://github.com/user-attachments/assets/bc91844f-be71-4b8b-a2a8-ece5cbc866cf" /><img width="250" height="600" alt="Simulator Screenshot - iPhone 15 Pro - 2024-10-30 at 14 36 08" src="https://github.com/user-attachments/assets/409569c4-6d30-42f2-a81b-3ec13c126aaf" /><img width="250" height="600" alt="Simulator Screenshot - iPhone 15 Pro - 2024-10-30 at 14 42 51" src="https://github.com/user-attachments/assets/6790783f-b18c-4121-8a07-2dde2a6588a5" /><img width="250" height="600" alt="Simulator Screenshot - iPhone 15 Pro - 2024-10-30 at 20 42 04" src="https://github.com/user-attachments/assets/c4faf935-4959-40cb-bf21-fddb5e3d7b5f" /><img width="250" height="600" alt="Simulator Screenshot - iPhone 15 Pro - 2024-10-30 at 15 00 53" src="https://github.com/user-attachments/assets/7506584a-44bc-4157-abff-63d30d4629bf" /><img width="250" height="600" alt="Simulator Screenshot - iPhone 15 Pro - 2024-10-30 at 20 36 19" src="https://github.com/user-attachments/assets/b17ef2bd-e1f6-401f-9d48-163fc1dd61ab" />
+
+
+
+
+
+
 
 # Lyoko Sketch(Japan Travel)
 
